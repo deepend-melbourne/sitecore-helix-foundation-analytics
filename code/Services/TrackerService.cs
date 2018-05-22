@@ -142,16 +142,16 @@ namespace Sitecore.Foundation.Analytics.Services
             Tracker.Current.CurrentPage.RegisterOutcome(outcomeDefinition, currencyCode, monetaryValue);
         }
 
-        public void IdentifyContact(string source, string identifier)
+        public void IdentifyContact(XConnectClient client, string source, string identifier, bool force = false)
         {
             if (!IsActive)
             {
                 return;
             }
 
-            if (Tracker.Current.Contact.IsNew || Tracker.Current.Contact.IdentificationLevel == ContactIdentificationLevel.Anonymous)
+            if (Configuration.Factory.CreateObject("tracking/contactManager", true) is Sitecore.Analytics.Tracking.ContactManager manager)
             {
-                if (Configuration.Factory.CreateObject("tracking/contactManager", true) is Sitecore.Analytics.Tracking.ContactManager manager)
+                if (force || Tracker.Current.Contact.IsNew || Tracker.Current.Contact.IdentificationLevel == ContactIdentificationLevel.Anonymous)
                 {
                     Tracker.Current.Contact.ContactSaveMode = ContactSaveMode.AlwaysSave;
                     manager.SaveContactToCollectionDb(Tracker.Current.Contact);
@@ -161,23 +161,19 @@ namespace Sitecore.Foundation.Analytics.Services
                     // NOTE: Sitecore.Analytics.XConnect.DataAccess.Constants.IdentifierSource is marked internal in 9.0 Initial - use "xDB.Tracker"
                     var trackerIdentifier = new IdentifiedContactReference(Sitecore.Analytics.XConnect.DataAccess.Constants.IdentifierSource, Tracker.Current.Contact.ContactId.ToString("N"));
 
-                    // Get contact from xConnect, update and save the facet
-                    using (var client = XConnectHelper.GetXConnectClient())
+                    try
                     {
-                        try
-                        {
-                            var contact = client.Get(trackerIdentifier, new ContactExpandOptions());
+                        var contact = client.Get(trackerIdentifier, new ContactExpandOptions());
 
-                            if (contact != null)
-                            {
-                                manager.RemoveFromSession(Tracker.Current.Contact.ContactId);
-                                Tracker.Current.Session.Contact = manager.LoadContact(Tracker.Current.Contact.ContactId);
-                            }
-                        }
-                        catch (XdbExecutionException)
+                        if (contact != null)
                         {
-                            // Manage conflicts / exceptions
+                            manager.RemoveFromSession(Tracker.Current.Contact.ContactId);
+                            Tracker.Current.Session.Contact = manager.LoadContact(Tracker.Current.Contact.ContactId);
                         }
+                    }
+                    catch (XdbExecutionException)
+                    {
+                        // Manage conflicts / exceptions
                     }
                 }
             }
