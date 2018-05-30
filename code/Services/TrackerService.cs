@@ -3,7 +3,6 @@ using System.Globalization;
 using Sitecore.Analytics;
 using Sitecore.Analytics.Model;
 using Sitecore.Diagnostics;
-using Sitecore.Foundation.Analytics.Helpers;
 using Sitecore.Foundation.DependencyInjection;
 using Sitecore.Marketing.Definitions;
 using Sitecore.Marketing.Definitions.Goals;
@@ -11,7 +10,6 @@ using Sitecore.Marketing.Definitions.Outcomes.Model;
 using Sitecore.Marketing.Definitions.PageEvents;
 using Sitecore.XConnect;
 using Sitecore.XConnect.Client;
-using Sitecore.XConnect.Collection.Model;
 
 namespace Sitecore.Foundation.Analytics.Services
 {
