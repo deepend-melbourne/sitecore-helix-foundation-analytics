@@ -17,7 +17,7 @@ namespace Sitecore.Foundation.Analytics.Extensions
 
             if (ret == null)
             {
-                ret = new Contact(new ContactIdentifier(Sitecore.Analytics.XConnect.DataAccess.Constants.IdentifierSource, contact.ContactId.ToString("N"), ContactIdentifierType.Anonymous));
+                ret = new Contact(new ContactIdentifier(trackerIdentifier.Source, trackerIdentifier.Identifier, ContactIdentifierType.Anonymous));
 
                 client.AddContact(ret);
 
@@ -37,7 +37,7 @@ namespace Sitecore.Foundation.Analytics.Extensions
 
             if (ret == null)
             {
-                ret = new Contact(new ContactIdentifier(Sitecore.Analytics.XConnect.DataAccess.Constants.IdentifierSource, contact.ContactId.ToString("N"), ContactIdentifierType.Anonymous));
+                ret = new Contact(new ContactIdentifier(trackerIdentifier.Source, trackerIdentifier.Identifier, ContactIdentifierType.Anonymous));
 
                 client.AddContact(ret);
 
